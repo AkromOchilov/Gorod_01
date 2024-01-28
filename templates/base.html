@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - My Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding-top: 50px; /* Adjusted for fixed navbar height */
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .navbar {
+            background-color: #333;
+            color: white;
+            position: fixed; /* Fixed position */
+            top: 0;
+            width: 100%;
+            padding: 10px 0;
+            z-index: 1000; /* Ensure navbar is on top */
+        }
+        .navbar a {
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .navbar a:hover {
+            background-color: #555;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+        }
+    </style>
+</head>
+<<body>
+    <div class="navbar">
+        <!-- Navigation links -->
+        <a href="/">Main</a>
+        <a href="/data">Data</a>
+        <a href="/blog">Blog</a>
+        <a href="/reports">Reports</a>
+        <a href="/contact">Contact Us</a>
+        <!-- Add login/signup links if needed -->
+        <a href="/login">Login</a>
+        <a href="/signup">Sign Up</a>
+    </div>
+
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Scripts go here -->
+</body>
+</html>
