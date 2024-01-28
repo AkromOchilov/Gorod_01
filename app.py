@@ -60,12 +60,13 @@ def data():
     df_html = df_paginated.to_html(classes='table table-striped', border=0, index=False)
 
     # Creating a Plotly figure
-    gdf = gpd.GeoDataFrame(df_paginated, geometry=gpd.points_from_xy(
-        df_paginated['longitude'], df_paginated['latitude']))
+    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(
+        df['longitude'], df['latitude']))
 
     # Create a heatmap using Folium's MarkerCluster plugin
-    map = folium.Map(location=[41.3775, 64.5853], zoom_start=8, width=600,
-                     height=300)  # Adjust width and height as needed
+    map = folium.Map(location=[41.3775, 64.5853], zoom_start=8, width=1100,
+                     height=600, display=False)
+    # Adjust width and height as needed
     marker_cluster = MarkerCluster().add_to(
         map)  # Use the plugin to create the cluster
 
