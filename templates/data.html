@@ -9,70 +9,90 @@ Data
 <p>This is the section where you can find all the data-related content, reports, statistics, and more.</p>
 
 <div class="filters">
-  <!-- Filters Form -->
-  <form method="GET" action="/data">
-    <!-- Year Filter -->
-    <label for="year">Year:</label>
-    <select name="year" id="year">
-      <option value="">All</option>
-      {% for year in years %}
-      <option value="{{ year }}">{{ year }}</option>
-      {% endfor %}
-    </select>
+    <!-- Filters Form -->
+    <form method="GET" action="/data">
+        <!-- Year Filter -->
+        <label for="year">Year:</label>
+        <select name="year" id="year">
+            <option value="">All</option>
+            {% for year in years %}
+            <option value="{{ year }}">{{ year }}</option>
+            {% endfor %}
+        </select>
 
-    <!-- Accident Type Filter -->
-    <label for="accident_type">Accident Type:</label>
-    <select name="accident_type" id="accident_type">
-      <option value="">All</option>
-      {% for accident_type in accident_types %}
-      <option value="{{ accident_type }}">{{ accident_type }}</option>
-      {% endfor %}
-    </select>
+        <!-- Accident Type Filter -->
+        <label for="accident_type">Accident Type:</label>
+        <select name="accident_type" id="accident_type">
+            <option value="">All</option>
+            {% for accident_type in accident_types %}
+            <option value="{{ accident_type }}">{{ accident_type }}</option>
+            {% endfor %}
+        </select>
 
-    <!-- District Filter -->
-    <label for="district">District:</label>
-    <select name="district" id="district">
-      <option value="">All</option>
-      {% for district in districts %}
-      <option value="{{ district }}">{{ district }}</option>
-      {% endfor %}
-    </select>
+        <!-- District Filter -->
+        <label for="district">District:</label>
+        <select name="district" id="district">
+            <option value="">All</option>
+            {% for district in districts %}
+            <option value="{{ district }}">{{ district }}</option>
+            {% endfor %}
+        </select>
 
-    <!-- Road Condition Filter -->
-    <label for="road_condition">Road Condition:</label>
-    <select name="road_condition" id="road_condition">
-      <option value="">All</option>
-      {% for road_condition in road_conditions %}
-      <option value="{{ road_condition }}">{{ road_condition }}</option>
-      {% endfor %}
-    </select>
+        <!-- Road Condition Filter -->
+        <label for="road_condition">Road Condition:</label>
+        <select name="road_condition" id="road_condition">
+            <option value="">All</option>
+            {% for road_condition in road_conditions %}
+            <option value="{{ road_condition }}">{{ road_condition }}</option>
+            {% endfor %}
+        </select>
 
-    <!-- Weather Condition Filter -->
-    <label for="weather_condition">Weather Condition:</label>
-    <select name="weather_condition" id="weather_condition">
-      <option value="">All</option>
-      {% for weather_condition in weather_conditions %}
-      <option value="{{ weather_condition }}">{{ weather_condition }}</option>
-      {% endfor %}
-    </select>
+        <!-- Weather Condition Filter -->
+        <label for="weather_condition">Weather Condition:</label>
+        <select name="weather_condition" id="weather_condition">
+            <option value="">All</option>
+            {% for weather_condition in weather_conditions %}
+            <option value="{{ weather_condition }}">{{ weather_condition }}</option>
+            {% endfor %}
+        </select>
 
-    <!-- Road Part Filter -->
-    <label for="road_part">Road Part:</label>
-    <select name="road_part" id="road_part">
-      <option value="">All</option>
-      {% for road_part in road_parts %}
-      <option value="{{ road_part }}">{{ road_part }}</option>
-      {% endfor %}
-    </select>
+        <!-- Road Part Filter -->
+        <label for="road_part">Road Part:</label>
+        <select name="road_part" id="road_part">
+            <option value="">All</option>
+            {% for road_part in road_parts %}
+            <option value="{{ road_part }}">{{ road_part }}</option>
+            {% endfor %}
+        </select>
 
-    <!-- Submit Button -->
-    <input type="submit" value="Apply Filters">
-  </form>
+        <!-- Vehicle Model Filter -->
+        <label for="vehicle_model_uz">Vehicle Model:</label>
+        <select name="vehicle_model_uz" id="vehicle_model_uz">
+            <option value="">Select Model</option>
+            {% for model in vehicle_models_uz %}
+            <option value="{{ model }}">{{ model }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Submit Button -->
+        <input type="submit" value="Apply Filters">
+    </form>
 </div>
+
+{% if risk_level is not none %}
+    <div class="risk-level">
+        <p>Your Risk Level for the selected model and district: {{ risk_level }}%</p>
+    </div>
+{% endif %}
 
 <!-- DataFrame Table -->
 <div class="table-responsive">
   {{ table|safe }}
+</div>
+
+<!-- Display Risk Level -->
+<div>
+    <p>Customer Risk Level: {{ risk_level }}</p>
 </div>
 
 <!-- Pagination Placeholder -->
@@ -86,20 +106,17 @@ Data
 
 <!-- Plotly Map -->
 <div id="accidents-map" style="height: 500px;"></div>
-
-
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script type="text/javascript">
     var map_json = {{ map_json | safe }};
-    console.log(map_json);  // Add this to print the JSON in the browser console
+    console.log(map_json);
     Plotly.newPlot('accidents-map', JSON.parse(map_json));
 </script>
 
 <!-- Folium Map -->
-<div id="folium-map" style="height: 300px;margin: 0 auto;"></div>  ```
-
-<!-- Include the Folium map generated in app.py -->
+<div id="folium-map" style="height: 300px;margin: 0 auto;"></div>
 {{ map_html | safe }}
+
 <style>
 .filters {
   margin-bottom: 20px;

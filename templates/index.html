@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Main</title>
+</head>
+<body>
 {% extends "base.html" %}
 
 {% block title %}
@@ -7,5 +13,43 @@ Main
 {% block content %}
 <h1>Welcome to Our Website</h1>
 <p>This is the homepage where you'll find an overview of what we offer.</p>
-<!-- Add more homepage-related content here -->
+
+<section>
+    <h2>About Us</h2>
+    <p>Learn about our mission and what drives us. [Brief description or mission statement]</p>
+</section>
+
+<section>
+    <h2>Our Services</h2>
+    <ul>
+        <li>Service 1 - [Short description]</li>
+        <li>Service 2 - [Short description]</li>
+        <li>Service 3 - [Short description]</li>
+        <!-- Add more services as needed -->
+    </ul>
+</section>
+
+<section>
+    <h2>Testimonials</h2>
+    <p>"Great service and amazing support!" - [Customer Name]</p>
+    <!-- Add more testimonials -->
+</section>
+
+<section>
+    <h2>Latest News</h2>
+    <p>[Latest news or blog post excerpt]</p>
+    <!-- Link to news or blog section -->
+</section>
+
+<section>
+    <h2>Contact Us</h2>
+    <p>Have questions? <a href="/contact">Get in touch!</a></p>
+</section>
+
+<footer>
+    <p>&copy; [Current Year] Your Company Name. All rights reserved.</p>
+    <!-- Include links to other pages and social media profiles -->
+</footer>
 {% endblock %}
+</body>
+</html>

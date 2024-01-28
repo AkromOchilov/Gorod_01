@@ -7,91 +7,75 @@ import json
 import folium
 import geopandas as gpd
 from folium.plugins import MarkerCluster
-
+import os
 
 app = Flask(__name__)
 
+# Load your dataset
 df = pd.read_csv('processed_df.csv')
 
-# Extract unique values for filters
+# Extract unique values for dropdown menus
 years = sorted(pd.to_datetime(df['date_accident']).dt.year.unique())
 accident_types = sorted(df['accident_type'].dropna().unique())
 districts = sorted(df['district'].dropna().unique())
-road_conditions = sorted(df['road_condition'].dropna().unique())
-weather_conditions = sorted(df['weather_condition'].dropna().unique())
-road_parts = sorted(df['road_part'].dropna().unique())
+vehicle_models_uz = sorted(df['vehicle_model_uz'].dropna().unique())
 
-@app.route('/')
-def index():
-    return render_template('index.html')
 
-@app.route('/data')
+def calculate_risk_level(df, district, vehicle_model):
+    district_df = df[df['district'] == district]
+    vehicle_count = len(
+        district_df[district_df['vehicle_model_uz'] == vehicle_model])
+    total_count = len(district_df)
+    return (vehicle_count / total_count) * 100 if total_count > 0 else 0
+
+
+@app.route('/data', methods=['GET'])
 def data():
-    # Retrieve filter parameters from request
     selected_year = request.args.get('year')
     selected_accident_type = request.args.get('accident_type')
     selected_district = request.args.get('district')
-    selected_road_condition = request.args.get('road_condition')
-    selected_weather_condition = request.args.get('weather_condition')
-    selected_road_part = request.args.get('road_part')
+    selected_vehicle_model = request.args.get('vehicle_model_uz')
+    page = request.args.get('page', 1, type=int)
 
-    # Filter the DataFrame based on the parameters
     filtered_df = df.copy()
     if selected_year:
-        filtered_df = filtered_df[pd.to_datetime(filtered_df['date_accident']).dt.year == int(selected_year)]
+        filtered_df = filtered_df[
+            pd.to_datetime(filtered_df['date_accident']).dt.year == int(
+                selected_year)]
     if selected_accident_type:
-        filtered_df = filtered_df[filtered_df['accident_type'] == selected_accident_type]
+        filtered_df = filtered_df[
+            filtered_df['accident_type'] == selected_accident_type]
     if selected_district:
         filtered_df = filtered_df[filtered_df['district'] == selected_district]
-    if selected_road_condition:
-        filtered_df = filtered_df[filtered_df['road_condition'] == selected_road_condition]
-    if selected_weather_condition:
-        filtered_df = filtered_df[filtered_df['weather_condition'] == selected_weather_condition]
-    if selected_road_part:
-        filtered_df = filtered_df[filtered_df['road_part'] == selected_road_part]
 
-    # Pagination
-    page = request.args.get('page', 1, type=int)
+    total_rows = len(filtered_df)
     per_page = 20
-    total_pages = (len(filtered_df) + per_page - 1) // per_page  # Calculate total pages
-    df_paginated = filtered_df.iloc[(page - 1) * per_page:page * per_page]
+    start = (page - 1) * per_page
+    end = start + per_page
+    paginated_df = filtered_df.iloc[start:end]
 
-    # Convert filtered and paginated dataframe to HTML table
-    df_html = df_paginated.to_html(classes='table table-striped', border=0, index=False)
+    risk_level = None
+    if selected_district and selected_vehicle_model:
+        risk_level = calculate_risk_level(df, selected_district,
+                                          selected_vehicle_model)
 
-    # Creating a Plotly figure
-    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(
-        df['longitude'], df['latitude']))
-
-    # Create a heatmap using Folium's MarkerCluster plugin
-    map = folium.Map(location=[41.3775, 64.5853], zoom_start=8, width=1100,
-                     height=600, display=False)
-    # Adjust width and height as needed
-    marker_cluster = MarkerCluster().add_to(
-        map)  # Use the plugin to create the cluster
-
-    for i in range(len(gdf)):
-        folium.Marker([gdf.iloc[i]['latitude'], gdf.iloc[i]['longitude']],
-                      icon=folium.Icon(color='red', prefix='fa',
-                                       icon='circle'),
-                      popup=f"Accident ID: {gdf.iloc[i]['id']}").add_to(
-            marker_cluster)
-
-    # Generate map HTML
-    map_html = map._repr_html_()
-
-    return render_template('data.html', table=df_html, years=years, accident_types=accident_types,
-                           districts=districts, road_conditions=road_conditions,
-                           weather_conditions=weather_conditions, road_parts=road_parts,
-                           total_pages=total_pages, current_page=page, map_html=map_html)
-
+    return render_template('data.html',
+                           table=paginated_df.to_html(classes='dataframe'),
+                           years=years, accident_types=accident_types,
+                           districts=districts,
+                           vehicle_models_uz=vehicle_models_uz,
+                           risk_level=risk_level,
+                           total_pages=(total_rows // per_page),
+                           current_page=page)
 @app.route('/blog')
 def blog():
     return render_template('blog.html')
 
 @app.route('/reports')
 def reports():
-    return render_template('reports.html')
+    directory = os.path.join(app.static_folder, "pdfs")
+    pdf_files = [f for f in os.listdir(directory) if f.endswith('.pdf')]
+    return render_template('reports.html', pdf_files=pdf_files)
 
 @app.route('/contact')
 def contact():

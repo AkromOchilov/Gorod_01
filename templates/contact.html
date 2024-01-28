@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Us</title>
+</head>
+<body>
 {% extends "base.html" %}
 
 {% block title %}
@@ -6,6 +12,43 @@ Contact Us
 
 {% block content %}
 <h1>Contact Us</h1>
-<p>Have questions? Reach out to us through the contact information below.</p>
-<!-- Add contact form or additional contact information here -->
+<p>Have questions or need more information? Reach out to us through the contact information below, or send us a message using the form.</p>
+
+<div>
+    <h2>Send Us a Message</h2>
+    <form action="/submit-contact-form" method="post">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br>
+
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="4" required></textarea><br>
+
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+<div>
+    <h2>Contact Information</h2>
+    <p><strong>Email:</strong> contact@example.com</p>
+    <p><strong>Phone:</strong> +123 456 7890</p>
+    <p><strong>Address:</strong> 123 Example Street, City, Country</p>
+</div>
+
+<div>
+    <h2>Find Us</h2>
+    <!-- Embed Google Map here -->
+</div>
+
+<div>
+    <h2>Follow Us</h2>
+    <p><a href="your_facebook_page_url">Facebook</a></p>
+    <p><a href="your_twitter_handle_url">Twitter</a></p>
+    <p><a href="your_linkedin_page_url">LinkedIn</a></p>
+    <!-- Other social media links if any -->
+</div>
 {% endblock %}
+</body>
+</html>

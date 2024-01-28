@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reports</title>
+</head>
+<body>
 {% extends "base.html" %}
 
 {% block title %}
@@ -7,5 +13,13 @@ Reports
 {% block content %}
 <h1>Welcome to the Reports Section</h1>
 <p>Discover our in-depth reports, analytics, and research findings in this section.</p>
-<!-- Add more reports-related content here -->
+
+<h2>Download Reports</h2>
+<ul>
+    {% for file in pdf_files %}
+    <li><a href="{{ url_for('static', filename='pdfs/' + file) }}" download="{{ file }}">{{ file }}</a></li>
+    {% endfor %}
+</ul>
 {% endblock %}
+</body>
+</html>
